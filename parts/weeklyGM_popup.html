@@ -1,0 +1,16 @@
+        <div class="modal-header">
+            <h3 class="modal-title" ng-repeat="w in weeklyGmReportData">Weekly GM Report {{w.lastWeekBegin.substr(5)}} to {{w.lastWeekEnd.substr(5)}}</h3>
+        </div>
+        <div class="modal-body">
+            <dl class="dl-horizontal" ng-repeat="x in weeklyGmReportData">
+                <dt>Total Head Count:</dt><dd>{{x.headCount}}</dd>
+                <dt>Total Revenue:</dt><dd>{{x.totalRevenue}}</dd>
+                <dt>Number of Birthdays:</dt><dd>{{x.numParties}}</dd>
+                <dt>Attendance at AirFit:</dt><dd>{{x.attendAirFit}}</dd>
+                <dt>Attendance at ClubAir:</dt><dd>{{x.attendClubAir}}</dd>
+                <dt>List of organizations:</dt><dd ng-repeat="y in weeklyGmReportData[0]['organizationList']">{{y}}</dd>
+            </dl>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" type="button" ng-click="ok()">OK</button>
+        </div>

@@ -1,0 +1,108 @@
+		<div ng-controller="slotsCtrl">
+			<div class="container">
+				<div class="row" style="margin-bottom: 5px;">
+					<div class="col-xs-12 col-sm-3 col-md-3 col-lg-2">
+						<button ng-click="getDataset()" type="button" class="btn btn-default btn-block" scroll-to="{{viewTime}}">Refresh Data<wave-spinner ng-show="capacityLoading"></wave-spinner></button>
+					</div>
+					<div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+						<span class="h5">Showing: <span class="label label-primary">{{viewTime}}</span> &nbsp;&nbsp; Active Slot: <span class="label label-danger">{{currentSlot}}</span></span>
+					</div>
+					<div class="col-xs-12 col-sm-3 col-md-3 col-lg-4">	
+						
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-12 col-sm-3 col-md-3 col-lg-2">
+						<div id="capacityScroller" class="capacityScroller" ng-class="{capacityScrollIphone: viewingWidth <= 568, capacityScrollTouch: viewingWidth >= 569}">
+							<div class="btn-group-vertical center-block" role="group">
+								<button ng-repeat="x in timeslots | passMeBy" ng-click="setSlot('{{x.slotTime}}')" type="button" class="btn btn-default" id="{{viewTime}}" ng-class="{'btn-primary': x.slotTime == viewTime, 'btn-danger': x.slotTime == currentSlot, 'btn-opener': x.slotCount == 0}" ><span>{{x.slotTime}}</span>&nbsp;&nbsp;&nbsp;<span class="badge pull-right">{{x.occupancy}}</span></button>
+							</div>
+						</div>
+					</div>
+					<style type="text/css">
+						.sortorder:after {
+							content: '\25b2';
+						}
+						.sortorder.reverse:after {
+							content: '\25bc';
+						}
+					</style>
+					<div class="col-xs-12 col-sm-5 col-md-4 col-lg-4" ui-view>
+						<table class="table table-condensed table-striped" style="padding-bottom:0;margin-bottom:0;">
+							<thead>
+								<tr>
+									<th>
+										<a href="" ng-click="order('Count')">#</a>
+										<span class="sortorder" ng-show="predicate === 'CustomerKey'" ng-class="{reverse:reverse}"></span>
+									</th>
+									<th>
+										<a href="" ng-click="order('FirstName')">First Name</a>
+										<span class="sortorder" ng-show="predicate === 'FirstName'" ng-class="{reverse:reverse}"></span>
+									</th>
+									<th>
+										<a href="" ng-click="order('LastName')">Last Name</a>
+										<span class="sortorder" ng-show="predicate === 'LastName'" ng-class="{reverse:reverse}"></span>
+									</th>
+									<th>
+										<a href="" ng-click="order('Quantity')">Qty</a>
+										<span class="sortorder" ng-show="predicate === 'Quantity'" ng-class="{reverse:reverse}"></span>
+									</th>
+								</tr>
+							</thead>
+						</table>
+						<div ng-class="{jumpersScrollIphone: viewingWidth <= 568, jumpersScrollTouch: viewingWidth >= 568}">
+						<table class="table table-condensed table-striped">
+							<tbody>
+								<tr ng-repeat="people in timeslots[getSlot()]['jumpers'] | orderBy:predicate:reverse | filter:query" ng-click="getCustomerData(people.CustomerKey)">
+									<td>{{people.CustomerKey}}</td>
+									<td>{{people.FirstName}}</td>
+									<td>{{people.LastName}}</td>
+									<td>{{people.Quantity}}</td>
+								</tr>
+							</tbody>
+						</table>
+						</div>
+						<div class="form-group"><input class="form-control" ng-model="query[queryBy]" placeholder="Start typing to search..."/></div>
+					</div>
+					<div class="col-xs-12 col-sm-4 col-md-5 col-lg-6">
+						<div ng-repeat="cust in customerData" class="panel panel-primary">
+							<div class="panel-heading">
+								<h1 class="panel-title">{{cust.first_name}} {{cust.last_name}} <small>({{cust.gender}})</small><span class="pull-right" style="font-size:14px;">{{cust.birthday}} &nbsp;<span class="badge pull-right">{{cust.age}}</span></span></h1>
+							</div>
+							<div class="panel-body">
+								<dl class="dl-horizontal">
+									<dt>Customer Key:</dt>
+										<dd>{{cust.cust_key}}</dd>
+									<dt>Last visit:</dt>
+										<dd>{{cust.last_visit}} ({{cust.num_visits}} total)</dd>
+								</dl>
+								<dl class="dl-horizontal">
+									<dt>Address:</dt>
+										<dd>{{cust.address1}}</dd>
+										<dd>{{cust.address2}}</dd>
+										<dd>{{cust.city}}, {{cust.state}} {{cust.zip_code}}</dd>
+									<dt>Phone:</dt>
+										<dd>{{cust.phone}}</dd>
+									<dt>Email:</dt>
+										<dd>{{cust.email}}</dd>
+								</dl>
+								<table class="table">
+									<thead>
+										<th>Name on Waiver</th>
+										<th>Valid?</th>
+										<th>Signed by</th>
+									</thead>
+									<tbody>
+										<tr ng-repeat="w in cust.waivers">
+											<td>{{w.waiver_fname}} {{w.waiver_lname}}</td>
+											<td>{{w.waiver_valid}}</td>
+											<td>{{w.signer_fname}} {{w.signer_fname}}</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
